@@ -52,31 +52,33 @@ export const Breadcrumb: React.FC = () => {
 
   return (
     <nav
-      aria-label="Breadcrumb"
+      aria-label="Breadcrumb navigation"
       className="flex items-center gap-1 text-xs"
       style={{ color: 'var(--muted)' }}
     >
-      {crumbs.map((crumb, i) => {
-        const isLast = i === crumbs.length - 1;
-        return (
-          <React.Fragment key={crumb.href}>
-            {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 opacity-50" aria-hidden />}
-            {isLast ? (
-              <span className="font-medium" style={{ color: 'var(--text)' }} aria-current="page">
-                {crumb.label}
-              </span>
-            ) : (
-              <Link
-                to={crumb.href}
-                className="transition-colors hover:underline"
-                style={{ color: 'var(--muted)' }}
-              >
-                {crumb.label}
-              </Link>
-            )}
-          </React.Fragment>
-        );
-      })}
+      <ol className="flex items-center gap-1 list-none m-0 p-0">
+        {crumbs.map((crumb, i) => {
+          const isLast = i === crumbs.length - 1;
+          return (
+            <li key={crumb.href} className="flex items-center gap-1">
+              {i > 0 && <ChevronRight className="h-3 w-3 shrink-0 opacity-50" aria-hidden="true" />}
+              {isLast ? (
+                <span className="font-medium" style={{ color: 'var(--text)' }} aria-current="page">
+                  {crumb.label}
+                </span>
+              ) : (
+                <Link
+                  to={crumb.href}
+                  className="transition-colors hover:underline focus:outline-none focus:ring-2 focus:ring-accent/50 rounded px-1"
+                  style={{ color: 'var(--muted)' }}
+                >
+                  {crumb.label}
+                </Link>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </nav>
   );
 };
