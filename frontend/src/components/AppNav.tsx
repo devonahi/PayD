@@ -43,65 +43,68 @@ const AppNav: React.FC = () => {
       <NavLink
         to="/employer"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <Briefcase className="w-4 h-4" />
         </span>
         <span className="hidden sm:inline">Employer</span>
+        <span className="sm:hidden">Employer</span>
       </NavLink>
 
       <NavLink
         to="/payroll"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <Wallet className="w-4 h-4" />
         </span>
         <span className="hidden sm:inline">Payroll</span>
+        <span className="sm:hidden">Payroll</span>
       </NavLink>
 
       <NavLink
         to="/employee"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <User className="w-4 h-4" />
         </span>
         <span className="hidden sm:inline">Employees</span>
+        <span className="sm:hidden">Employees</span>
       </NavLink>
 
       <NavLink
         to="/portal"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <LayoutDashboard className="w-4 h-4" />
         </span>
         My Portal
@@ -110,48 +113,50 @@ const AppNav: React.FC = () => {
       <NavLink
         to="/reports"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <FileText className="w-4 h-4" />
         </span>
         <span className="hidden sm:inline">Reports</span>
+        <span className="sm:hidden">Reports</span>
       </NavLink>
 
       <NavLink
         to="/cross-asset-payment"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <Globe className="w-4 h-4" />
         </span>
         <span className="hidden sm:inline">Cross-Asset</span>
+        <span className="sm:hidden">Cross-Asset</span>
       </NavLink>
 
       <NavLink
         to="/transactions"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <Activity className="w-4 h-4" />
         </span>
         History
@@ -160,58 +165,60 @@ const AppNav: React.FC = () => {
       <NavLink
         to="/revenue-split"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <span className="opacity-70">
+        <span className="opacity-70" aria-hidden="true">
           <PieChart className="w-4 h-4" />
         </span>
         <span className="hidden sm:inline">Revenue Split</span>
+        <span className="sm:hidden">Revenue Split</span>
       </NavLink>
 
-      <div className="w-px h-5 bg-(--border-hi) mx-2" />
+      <div className="w-px h-5 bg-(--border-hi) mx-2 hidden lg:block" aria-hidden="true" />
       <NavLink
         to="/admin"
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-red-500/50 min-h-[44px] ${
             isActive
               ? 'text-red-500 bg-red-500/10'
-              : 'text-red-400 hover:bg-red-500/20 hover:text-red-500'
+              : 'text-red-400 hover:bg-red-500/20 hover:text-red-500 active:scale-95'
           }`
         }
       >
-        <ShieldAlert className="w-4 h-4" />
+        <ShieldAlert className="w-4 h-4" aria-hidden="true" />
         Admin
       </NavLink>
 
       <NavLink
         to="/debug"
         className={({ isActive }) =>
-          `flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-mono tracking-wide border transition ${
+          `flex items-center gap-1 px-3 py-2 rounded-lg text-[11px] font-mono tracking-wide border transition focus:outline-none focus:ring-2 focus:ring-accent2/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent2) bg-[rgba(124,111,247,0.06)] border-[rgba(124,111,247,0.25)]'
-              : 'text-(--accent2) bg-[rgba(124,111,247,0.06)] border-[rgba(124,111,247,0.25)] hover:bg-[rgba(124,111,247,0.12)]'
+              : 'text-(--accent2) bg-[rgba(124,111,247,0.06)] border-[rgba(124,111,247,0.25)] hover:bg-[rgba(124,111,247,0.12)] active:scale-95'
           }`
         }
         onClick={() => setMobileOpen(false)}
       >
-        <Code className="w-4 h-4" />
+        <Code className="w-4 h-4" aria-hidden="true" />
         <span className="hidden sm:inline">debugger</span>
+        <span className="sm:hidden">debugger</span>
       </NavLink>
 
       <NavLink
         to="/rewards"
         onClick={() => setMobileOpen(false)}
         className={({ isActive }) =>
-          `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition ${
+          `flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] ${
             isActive
               ? 'text-(--accent) bg-white/5'
-              : 'text-(--muted) hover:bg-white/10 hover:text-white'
+              : 'text-(--muted) hover:bg-white/10 hover:text-white active:scale-95'
           }`
         }
       >
@@ -221,7 +228,7 @@ const AppNav: React.FC = () => {
       <Link
         to="/help"
         onClick={() => setMobileOpen(false)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition text-(--accent) hover:bg-(--accent)/10"
+        className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[44px] text-(--accent) hover:bg-(--accent)/10 active:scale-95"
       >
         Help
       </Link>
@@ -236,29 +243,42 @@ const AppNav: React.FC = () => {
 
         {/* Mobile menu button */}
         <button
-          aria-label="Toggle menu"
+          aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden p-2 rounded-md hover:bg-white/5 transition"
+          className="lg:hidden p-2 rounded-md hover:bg-white/5 active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/50 transition min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          {mobileOpen ? (
+            <X className="w-5 h-5" aria-hidden="true" />
+          ) : (
+            <Menu className="w-5 h-5" aria-hidden="true" />
+          )}
         </button>
 
         {/* User profile */}
         <div className="ml-auto flex items-center gap-2">
           {/* Network Switcher */}
-          <div className="hidden md:flex items-center rounded-lg border border-(--border-hi) bg-(--surface) p-1">
+          <div 
+            className="hidden md:flex items-center rounded-lg border border-(--border-hi) bg-(--surface) p-1"
+            role="group"
+            aria-label="Stellar network switcher"
+          >
             <button
               title="Switch to Testnet"
               onClick={() => setNetwork('TESTNET')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition ${network === 'TESTNET' ? 'bg-(--accent)/20 text-(--accent)' : 'text-(--muted) hover:text-(--text)'}`}
+              aria-pressed={network === 'TESTNET'}
+              aria-label="Switch to Testnet network"
+              className={`px-3 py-2 text-xs font-semibold rounded-md transition focus:outline-none focus:ring-2 focus:ring-accent/50 min-h-[36px] ${network === 'TESTNET' ? 'bg-(--accent)/20 text-(--accent)' : 'text-(--muted) hover:text-(--text) hover:bg-white/5'}`}
             >
               Testnet
             </button>
             <button
               title="Switch to Mainnet"
               onClick={() => setNetwork('PUBLIC')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition ${network === 'PUBLIC' ? 'bg-success/20 text-success' : 'text-(--muted) hover:text-(--text)'}`}
+              aria-pressed={network === 'PUBLIC'}
+              aria-label="Switch to Mainnet network"
+              className={`px-3 py-2 text-xs font-semibold rounded-md transition focus:outline-none focus:ring-2 focus:ring-success/50 min-h-[36px] ${network === 'PUBLIC' ? 'bg-success/20 text-success' : 'text-(--muted) hover:text-(--text) hover:bg-white/5'}`}
             >
               Mainnet
             </button>
@@ -278,9 +298,10 @@ const AppNav: React.FC = () => {
           </div>
           <button
             type="button"
-            className="p-1 rounded-lg flex items-center gap-2 cursor-pointer border border-(--border-hi) bg-(--surface) hover:bg-(--surface-hi) transition"
+            className="p-1 rounded-lg flex items-center gap-2 cursor-pointer border border-(--border-hi) bg-(--surface) hover:bg-(--surface-hi) active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/50 transition min-h-[44px]"
             onClick={() => setIsProfileEditorOpen(true)}
             title="Edit profile photo"
+            aria-label={`Edit profile photo for ${currentUser.name}`}
           >
             <Avatar
               email={currentUser.email}
@@ -307,16 +328,20 @@ const AppNav: React.FC = () => {
           />
           {/* Drawer panel */}
           <div
+            id="mobile-navigation"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="lg:hidden fixed left-0 right-0 top-(--header-h) z-50 border-b shadow-xl"
+            className="lg:hidden fixed left-0 right-0 top-(--header-h) z-50 border-b shadow-xl animate-in slide-in-from-top-4 duration-200"
             style={{
               background: 'var(--surface)',
               borderColor: 'var(--border-hi)',
             }}
           >
-            <nav className="flex flex-col gap-1 px-4 py-4 max-h-[calc(100dvh-var(--header-h))] overflow-y-auto">
+            <nav 
+              className="flex flex-col gap-1 px-4 py-4 max-h-[calc(100dvh-var(--header-h))] overflow-y-auto"
+              aria-label="Main navigation"
+            >
               {navLinks}
             </nav>
           </div>
@@ -330,10 +355,11 @@ const AppNav: React.FC = () => {
               <h3 className="text-base font-semibold text-(--text)">Profile Picture</h3>
               <button
                 type="button"
-                className="rounded p-1 text-(--muted) hover:bg-(--surface-hi)"
+                className="rounded p-1 text-(--muted) hover:bg-(--surface-hi) focus:outline-none focus:ring-2 focus:ring-accent/50 transition"
                 onClick={() => setIsProfileEditorOpen(false)}
+                aria-label="Close profile editor"
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
             <AvatarUpload
@@ -349,11 +375,12 @@ const AppNav: React.FC = () => {
             />
             <button
               type="button"
-              className="mt-4 w-full rounded border border-(--border-hi) px-3 py-2 text-sm text-(--text) hover:bg-(--surface-hi) transition"
+              className="mt-4 w-full rounded border border-(--border-hi) px-3 py-2 text-sm text-(--text) hover:bg-(--surface-hi) active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/50 transition min-h-[44px]"
               onClick={() => {
                 setUserImageUrl(undefined);
                 localStorage.removeItem('payd:user-avatar');
               }}
+              aria-label="Remove custom profile photo"
             >
               Remove Custom Photo
             </button>

@@ -54,7 +54,8 @@ const ConnectAccount: React.FC = () => {
         onClick={() => {
           void navigate('/login');
         }}
-        className="px-4 py-2.5 glass border-hi text-white font-bold rounded-xl hover:bg-white/5 transition-all text-xs uppercase tracking-wider"
+        className="px-4 py-2.5 glass border-hi text-white font-bold rounded-xl hover:bg-white/5 active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all text-xs uppercase tracking-wider min-h-[44px]"
+        aria-label="Sign in to your account"
       >
         Sign In
       </button>
@@ -64,11 +65,17 @@ const ConnectAccount: React.FC = () => {
           void connect();
         }}
         disabled={isConnecting}
-        className="px-6 py-2.5 bg-accent text-bg font-bold rounded-xl hover:scale-105 transition-transform shadow-lg shadow-accent/20 text-[11px] uppercase tracking-widest disabled:opacity-50"
+        className="px-6 py-2.5 bg-accent text-bg font-bold rounded-xl hover:scale-105 active:scale-100 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-transform shadow-lg shadow-accent/20 text-[11px] uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 min-h-[44px]"
+        aria-label={isConnecting ? 'Connecting to wallet' : 'Connect Stellar wallet'}
+        aria-busy={isConnecting}
       >
         {isConnecting ? (
           <span className="flex items-center gap-2">
-            <span className="w-3 h-3 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
+            <span 
+              className="w-3 h-3 border-2 border-bg/30 border-t-bg rounded-full animate-spin" 
+              role="status"
+              aria-label="Loading"
+            />
             {t('connectAccount.connecting') || 'Connecting...'}
           </span>
         ) : (

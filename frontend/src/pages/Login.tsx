@@ -171,7 +171,8 @@ const Login: React.FC = () => {
                     key={provider.id}
                     href={provider.href}
                     onClick={handleProviderIntent}
-                    className="group relative overflow-hidden rounded-3xl border border-[var(--border-hi)] bg-[color:rgba(255,255,255,0.03)] p-5 text-left shadow-[var(--shadow-card)] transition hover:border-[color:rgba(74,240,184,0.28)] hover:bg-[color:rgba(255,255,255,0.05)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+                    className="group relative overflow-hidden rounded-3xl border border-[var(--border-hi)] bg-[color:rgba(255,255,255,0.03)] p-5 text-left shadow-[var(--shadow-card)] transition hover:border-[color:rgba(74,240,184,0.28)] hover:bg-[color:rgba(255,255,255,0.05)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)] min-h-[88px]"
+                    aria-label={`${provider.label}. ${provider.description}`}
                   >
                     <div
                       aria-hidden="true"
