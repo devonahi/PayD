@@ -56,14 +56,20 @@ pub struct BonusPaymentEvent {
 
 #[contractevent]
 pub struct PaymentSentEvent {
+    pub batch_id: u64,
+    pub payment_index: u32,
     pub recipient: Address,
     pub amount: i128,
+    pub category: Symbol,
 }
 
 #[contractevent]
 pub struct PaymentSkippedEvent {
+    pub batch_id: u64,
+    pub payment_index: u32,
     pub recipient: Address,
     pub amount: i128,
+    pub category: Symbol,
 }
 
 #[contractevent]
@@ -471,8 +477,17 @@ impl BulkPaymentContract {
         let batch_id = Self::next_batch_id(&env);
 
         // Distribute from escrow to recipients (minimize event overhead)
+        let mut payment_index: u32 = 0;
         for op in payments.iter() {
             token_client.transfer(&current_contract, &op.recipient, &op.amount);
+            PaymentSentEvent {
+                batch_id,
+                payment_index,
+                recipient: op.recipient.clone(),
+                amount: op.amount,
+                category: op.category,
+            }.publish(&env);
+            payment_index += 1;
         }
 
         Self::record_usage(&env, &sender, total);
@@ -534,24 +549,40 @@ impl BulkPaymentContract {
         let token_client = token::Client::new(&env, &token);
         let contract_addr = env.current_contract_address();
         token_client.transfer(&sender, &contract_addr, &total);
+        let batch_id = Self::next_batch_id(&env);
 
         let mut remaining = total;
         let mut actual_success: u32 = 0;
         let mut fail_count: u32 = 0;
         let mut total_sent: i128 = 0;
 
+        let mut payment_index: u32 = 0;
         for op in payments.iter() {
             // Optimized: single pass for validation and distribution
             if op.amount <= 0 || remaining < op.amount {
                 fail_count += 1;
-                PaymentSkippedEvent { recipient: op.recipient.clone(), amount: op.amount }.publish(&env);
+                PaymentSkippedEvent {
+                    batch_id,
+                    payment_index,
+                    recipient: op.recipient.clone(),
+                    amount: op.amount,
+                    category: op.category,
+                }.publish(&env);
+                payment_index += 1;
                 continue;
             }
             token_client.transfer(&contract_addr, &op.recipient, &op.amount);
             remaining -= op.amount;
             total_sent += op.amount;
             actual_success += 1;
-            PaymentSentEvent { recipient: op.recipient.clone(), amount: op.amount }.publish(&env);
+            PaymentSentEvent {
+                batch_id,
+                payment_index,
+                recipient: op.recipient.clone(),
+                amount: op.amount,
+                category: op.category,
+            }.publish(&env);
+            payment_index += 1;
         }
 
         if remaining > 0 {
@@ -564,7 +595,6 @@ impl BulkPaymentContract {
                      else if actual_success == 0 { symbol_short!("rollbck") }
                      else { symbol_short!("partial") };
 
-        let batch_id = Self::next_batch_id(&env);
         let record = BatchRecord {
             sender,
             token,
