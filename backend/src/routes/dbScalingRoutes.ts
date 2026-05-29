@@ -147,6 +147,55 @@ router.get('/connection-breakdown', (req, res, next) => ctrl.getConnectionBreakd
  */
 router.get('/db-settings', (req, res, next) => ctrl.getDbSettings(req, res, next));
 
+// ── Part 38 (#283) ──────────────────────────────────────────────────────────
+
+/**
+ * @swagger
+ * /api/v1/db-scaling/seq-scan-stats:
+ *   get:
+ *     summary: Tables with high sequential scan counts (Part 38)
+ *     description: >
+ *       Lists user tables ordered by seq_scan descending. A high seqScanRatio
+ *       indicates missing or unused indexes worth investigating.
+ *     tags: [DB Scaling]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *           maximum: 100
+ *     responses:
+ *       200:
+ *         description: Sequential scan statistics per table
+ *       400:
+ *         description: Invalid limit parameter
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/seq-scan-stats', (req, res, next) => ctrl.getSeqScanStats(req, res, next));
+
+/**
+ * @swagger
+ * /api/v1/db-scaling/wal-stats:
+ *   get:
+ *     summary: WAL generation statistics since last stats reset (Part 38)
+ *     description: >
+ *       Queries pg_stat_wal for cumulative WAL records, bytes written,
+ *       buffer overflows, and write/sync timing.
+ *     tags: [DB Scaling]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: WAL statistics snapshot
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/wal-stats', (req, res, next) => ctrl.getWalStats(req, res, next));
+
 // ── Part 39 (#284) ──────────────────────────────────────────────────────────
 
 /**

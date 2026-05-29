@@ -128,6 +128,35 @@ export class DbScalingController {
     }
   }
 
+  // ── Part 38 (#283) ─────────────────────────────────────────────────────
+
+  /** #283a — Tables with high sequential scan counts. */
+  async getSeqScanStats(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const limit = Math.min(Number(req.query['limit'] ?? 20), 100);
+      if (isNaN(limit) || limit < 1) {
+        res.status(400).json({ success: false, error: 'limit must be a positive integer' });
+        return;
+      }
+      const data = await service.getSeqScanStats(limit);
+      res.json({ success: true, data });
+    } catch (err) {
+      logger.error({ err }, 'Failed to fetch sequential scan stats');
+      next(err);
+    }
+  }
+
+  /** #283b — WAL generation statistics. */
+  async getWalStats(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const data = await service.getWalStats();
+      res.json({ success: true, data });
+    } catch (err) {
+      logger.error({ err }, 'Failed to fetch WAL stats');
+      next(err);
+    }
+  }
+
   // ── Part 39 (#284) ─────────────────────────────────────────────────────
 
   /** #284a — Lock contention between concurrent backends. */
