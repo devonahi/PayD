@@ -98,6 +98,14 @@ pub struct ContractStatusChangedEvent {
     pub admin: Address,
 }
 
+/// Emitted when the contract is upgraded to a new version.
+#[contractevent]
+pub struct ContractUpgradedEvent {
+    pub admin: Address,
+    pub old_version: u32,
+    pub new_version: u32,
+}
+
 // ── Storage types ─────────────────────────────────────────────────────────────
 
 #[contracttype]
@@ -137,6 +145,8 @@ pub enum DataKey {
     LastClawbackLedger,
     /// Emergency pause flag (circuit breaker, stored in Instance).
     Paused,
+    /// Contract version for upgrade tracking.
+    Version,
 }
 
 const PERSISTENT_TTL_THRESHOLD: u32 = 20_000;
@@ -301,6 +311,46 @@ impl VestingContract {
             .instance()
             .get(&DataKey::Paused)
             .unwrap_or(false)
+    }
+
+    // ── Contract Upgrade / Version Management ──────────────────────────────
+
+    /// Returns the current contract version.
+    pub fn get_version(env: Env) -> u32 {
+        env.storage()
+            .persistent()
+            .get(&DataKey::Version)
+            .unwrap_or(1)
+    }
+
+    /// Marks the contract as upgraded to a new version (admin only).
+    /// Used for tracking contract state evolution and enabling state migrations.
+    pub fn mark_upgrade(env: Env, new_version: u32) -> Result<(), ContractError> {
+        let admin: Address = env.storage().persistent()
+            .get(&DataKey::Admin)
+            .ok_or(ContractError::NotInitialized)?;
+        admin.require_auth();
+
+        let old_version = env.storage()
+            .persistent()
+            .get(&DataKey::Version)
+            .unwrap_or(1);
+
+        env.storage().persistent().set(&DataKey::Version, &new_version);
+        env.storage().persistent().extend_ttl(
+            &DataKey::Version,
+            PERSISTENT_TTL_THRESHOLD,
+            PERSISTENT_TTL_EXTEND_TO,
+        );
+
+        ContractUpgradedEvent {
+            admin,
+            old_version,
+            new_version,
+        }
+        .publish(&env);
+
+        Ok(())
     }
 
     // ── Claim ─────────────────────────────────────────────────────────────

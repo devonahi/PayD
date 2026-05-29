@@ -143,6 +143,24 @@ pub struct BatchPartialEvent {
     pub fail_count:    u32,
 }
 
+/// Emitted for real-time analytics indexing on contract initialization.
+#[contractevent]
+pub struct ContractInitializedEvent {
+    pub admin: Address,
+    pub timestamp: u64,
+}
+
+/// Emitted for real-time analytics tracking of batch processing metrics.
+#[contractevent]
+pub struct BatchAnalyticsEvent {
+    pub batch_id: u64,
+    pub sender: Address,
+    pub token: Address,
+    pub total_sent: i128,
+    pub payment_count: u32,
+    pub timestamp: u64,
+}
+
 // ── Storage types ─────────────────────────────────────────────────────────────
 
 #[contracttype]
@@ -509,6 +527,17 @@ impl BulkPaymentContract {
         env.storage().persistent().extend_ttl(&key, 100_000, 500_000);
 
         BatchExecutedEvent { batch_id, total_sent: total }.publish(&env);
+
+        // Emit analytics event for real-time indexing
+        BatchAnalyticsEvent {
+            batch_id,
+            sender: sender.clone(),
+            token: token.clone(),
+            total_sent: total,
+            payment_count: success_count,
+            timestamp: env.ledger().timestamp(),
+        }.publish(&env);
+
         Ok(batch_id)
     }
 

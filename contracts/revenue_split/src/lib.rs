@@ -1,11 +1,27 @@
 #![no_std]
 
 use soroban_sdk::{
-    contract, contractevent, contractimpl, contracttype, token, Address, Env, String, Vec,
+    contract, contractevent, contractimpl, contracttype, contracterror, token, Address, Env, String, Vec,
 };
 
 #[cfg(test)]
 mod test;
+
+// ── Errors ────────────────────────────────────────────────────────────────────
+
+#[contracterror]
+#[derive(Copy, Clone, Debug, PartialEq)]
+#[repr(u32)]
+pub enum RevenueSplitError {
+    AlreadyInitialized = 1,
+    ZeroRecipients = 2,
+    ZeroBasisPoints = 3,
+    DuplicateRecipient = 4,
+    BasisPointsSumMismatch = 5,
+    LedgerReplayDetected = 6,
+    UnauthorizedDistribution = 7,
+    ContractPaused = 8,
+}
 
 // ── Events ────────────────────────────────────────────────────────────────────
 
@@ -215,12 +231,12 @@ impl RevenueSplitContract {
     /// - `from` must authorize the transaction.
     /// - Contract must not be paused (circuit breaker).
     /// - Must be the only distribution in this ledger (replay protection).
-    pub fn distribute(env: Env, token: Address, from: Address, amount: i128) {
+    pub fn distribute(env: Env, token: Address, from: Address, amount: i128) -> Result<(), RevenueSplitError> {
         if amount <= 0 {
             return Ok(());
         }
 
-        Self::require_not_paused(&env);
+        Self::require_not_paused(&env)?;
         from.require_auth();
         Self::require_unique_ledger(&env)?;
 
@@ -270,6 +286,7 @@ impl RevenueSplitContract {
             recipient_count,
         }
         .publish(&env);
+        Ok(())
     }
 
     /// Returns the ledger sequence of the last successful distribution.
@@ -298,20 +315,21 @@ impl RevenueSplitContract {
 
     // ── Private helpers ───────────────────────────────────────────────────
 
-    fn require_not_paused(env: &Env) {
+    fn require_not_paused(env: &Env) -> Result<(), RevenueSplitError> {
         let paused: bool = env
             .storage()
             .instance()
             .get(&DataKey::Paused)
             .unwrap_or(false);
         if paused {
-            panic!("Contract is paused");
+            return Err(RevenueSplitError::ContractPaused);
         }
+        Ok(())
     }
 
     /// Ensures a distribution has not already been executed in the current ledger
     /// sequence, preventing replay attacks.
-    fn require_unique_ledger(env: &Env) {
+    fn require_unique_ledger(env: &Env) -> Result<(), RevenueSplitError> {
         let current_ledger = env.ledger().sequence();
         let last_ledger: u32 = env
             .storage()
