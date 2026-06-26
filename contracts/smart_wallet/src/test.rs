@@ -341,3 +341,33 @@ fn mixed_multisig_with_swapped_types_fails_threshold() {
         assert_eq!(result, Err(WalletError::UnknownSigner));
     });
 }
+
+#[test]
+fn mixed_multisig_correct_types_satisfy_threshold() {
+    // 2-of-3 wallet with ed25519, secp256k1, ed25519 signers.
+    // Submitting correct-type proofs for two different key-type slots must pass.
+    let env = Env::default();
+
+    let (ed_signer_key1, ed_signing_key1) = make_ed25519_signer(&env, [40u8; 32]);
+    let (secp_signer_key, secp_signing_key) = make_secp256k1_signer(&env, [41u8; 32]);
+    let (ed_signer_key2, _ed_signing_key2) = make_ed25519_signer(&env, [42u8; 32]);
+    let signers = Vec::from_array(
+        &env,
+        [ed_signer_key1, secp_signer_key, ed_signer_key2],
+    );
+    let (contract_id, _client) = register_wallet(&env, signers, 2);
+
+    let raw = Bytes::from_slice(&env, &[45u8; 32]);
+    let payload = env.crypto().sha256(&raw);
+    let proofs = Vec::from_array(
+        &env,
+        [
+            sign_ed25519(&payload, &ed_signing_key1, &env),
+            sign_secp256k1(&payload, &secp_signing_key, &env),
+        ],
+    );
+
+    env.as_contract(&contract_id, || {
+        SmartWalletContract::verify_signatures_inner(&env, &payload, &proofs).unwrap();
+    });
+}
