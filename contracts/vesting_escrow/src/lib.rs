@@ -35,6 +35,8 @@ pub enum ContractError {
     ClawbackBelowClaimed = 13,
     /// Duration overflow when extending the vesting schedule.
     DurationOverflow = 14,
+    /// Accounting invariant violated: clawback amount exceeds remaining total.
+    InvariantViolation = 15,
 }
 
 // ── Events ────────────────────────────────────────────────────────────────────
@@ -486,7 +488,10 @@ impl VestingContract {
             return Err(ContractError::InvalidClawbackAmount);
         }
 
-        let new_total = config.total_amount.saturating_sub(amount);
+        let new_total = config
+            .total_amount
+            .checked_sub(amount)
+            .ok_or(ContractError::InvariantViolation)?;
 
         if new_total < config.claimed_amount {
             return Err(ContractError::ClawbackBelowClaimed);
