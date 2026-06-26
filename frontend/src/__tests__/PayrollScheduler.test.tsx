@@ -45,10 +45,12 @@ vi.mock('../components/AutosaveIndicator', () => ({
 
 vi.mock('../components/BulkPaymentStatusTracker', () => ({
   default: () => <div data-testid="bulk-status-tracker" />,
+  BulkPaymentStatusTracker: () => <div data-testid="bulk-status-tracker" />,
 }));
 
 vi.mock('../components/CountdownTimer', () => ({
   default: () => <div data-testid="countdown-timer" />,
+  CountdownTimer: () => <div data-testid="countdown-timer" />,
 }));
 
 vi.mock('../components/FormField', () => ({
@@ -80,10 +82,12 @@ vi.mock('../components/payroll/PayrollScheduleForm', () => ({
 
 vi.mock('../components/TransactionSimulationPanel', () => ({
   default: () => <div data-testid="simulation-panel" />,
+  TransactionSimulationPanel: () => <div data-testid="simulation-panel" />,
 }));
 
 vi.mock('../components/ContractErrorPanel', () => ({
   default: () => <div data-testid="contract-error-panel" />,
+  ContractErrorPanel: () => <div data-testid="contract-error-panel" />,
 }));
 
 vi.mock('../components/IssuerMultisigBanner', () => ({
@@ -97,6 +101,7 @@ vi.mock('../components/HelpLink', () => ({
 
 vi.mock('../components/TransactionPendingOverlay', () => ({
   default: () => <div data-testid="pending-overlay" />,
+  TransactionPendingOverlay: () => <div data-testid="pending-overlay" />,
 }));
 
 const notifyMock = vi.fn();
@@ -176,7 +181,7 @@ describe('PayrollScheduler error boundary', () => {
 
     render(<PayrollScheduler />);
 
-    fireEvent.click(screen.getByRole('button', { name: /configure schedule/i }));
+    fireEvent.click(screen.getByRole('button', { name: /configure payroll schedule/i }));
 
     expect(screen.getByRole('alert')).toBeTruthy();
     expect(screen.getByText(/PayrollScheduleForm encountered an error/i)).toBeTruthy();

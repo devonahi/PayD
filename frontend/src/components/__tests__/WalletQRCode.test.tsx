@@ -25,8 +25,8 @@ describe('WalletQRCode', () => {
     URL.createObjectURL = vi.fn(() => 'blob:test');
 
     // jsdom doesn't fire img.onload — make it fire synchronously when src is set
-    vi.spyOn(window, 'Image').mockImplementation(() => {
-      const img = {} as HTMLImageElement;
+    vi.spyOn(window, 'Image').mockImplementation(function () {
+      const img = { width: 160, height: 160 } as HTMLImageElement;
       Object.defineProperty(img, 'src', {
         set(url: string) {
           void url;

@@ -24,6 +24,7 @@ import { createClaimableBalanceTransaction, generateWallet } from '../services/s
 
 import { ContractErrorPanel } from '../components/ContractErrorPanel';
 import { IssuerMultisigBanner } from '../components/IssuerMultisigBanner';
+import { TransactionPendingOverlay } from '../components/TransactionPendingOverlay';
 import { HelpLink } from '../components/HelpLink';
 import { parseContractError, type ContractErrorDetail } from '../utils/contractErrorParser';
 import { formatDate } from '../utils/dateHelpers';

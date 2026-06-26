@@ -4,11 +4,13 @@ import { useAutosave } from '../useAutosave';
 
 vi.mock('../../utils/localStorage', () => {
   return {
-    LocalStorageHelper: vi.fn().mockImplementation(() => ({
-      get: vi.fn().mockReturnValue(null),
-      set: vi.fn(),
-      remove: vi.fn(),
-    })),
+    LocalStorageHelper: vi.fn(function () {
+      return {
+        get: vi.fn().mockReturnValue(null),
+        set: vi.fn(),
+        remove: vi.fn(),
+      };
+    }),
   };
 });
 
@@ -59,7 +61,9 @@ describe('useAutosave', () => {
       }),
       remove: vi.fn(),
     };
-    vi.mocked(LocalStorageHelper).mockImplementationOnce(() => mockInstance as never);
+    vi.mocked(LocalStorageHelper)
+      .mockImplementationOnce(function () { return mockInstance as never; })
+      .mockImplementationOnce(function () { return mockInstance as never; });
 
     const { result, rerender } = renderHook(({ data }) => useAutosave('key', data, 300), {
       initialProps: { data: { name: 'a' } },
@@ -85,7 +89,9 @@ describe('useAutosave', () => {
       }),
       remove: vi.fn(),
     };
-    vi.mocked(LocalStorageHelper).mockImplementationOnce(() => mockInstance as never);
+    vi.mocked(LocalStorageHelper)
+      .mockImplementationOnce(function () { return mockInstance as never; })
+      .mockImplementationOnce(function () { return mockInstance as never; });
 
     const { result, rerender } = renderHook(({ data }) => useAutosave('key', data, 100), {
       initialProps: { data: { v: 1 } },
@@ -113,7 +119,9 @@ describe('useAutosave', () => {
       set: mockSet,
       remove: vi.fn(),
     };
-    vi.mocked(LocalStorageHelper).mockImplementationOnce(() => mockInstance as never);
+    vi.mocked(LocalStorageHelper)
+      .mockImplementationOnce(function () { return mockInstance as never; })
+      .mockImplementationOnce(function () { return mockInstance as never; });
 
     const { rerender } = renderHook(({ data }) => useAutosave('key', data, 500), {
       initialProps: { data: 'a' },
