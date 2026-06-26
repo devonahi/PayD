@@ -28,7 +28,8 @@ describe('WalletQRCode', () => {
     vi.spyOn(window, 'Image').mockImplementation(() => {
       const img = {} as HTMLImageElement;
       Object.defineProperty(img, 'src', {
-        set(_url: string) {
+        set(url: string) {
+          void url;
           if (typeof img.onload === 'function') img.onload(new Event('load'));
         },
         get() {
