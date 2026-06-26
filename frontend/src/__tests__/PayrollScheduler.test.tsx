@@ -13,7 +13,13 @@ vi.mock('@stellar/design-system', () => ({
     delete sanitized.fieldSize;
     return <input {...sanitized} />;
   },
-  Select: (props: React.SelectHTMLAttributes<HTMLSelectElement> & { fieldSize?: string; children: React.ReactNode; label?: string }) => {
+  Select: (
+    props: React.SelectHTMLAttributes<HTMLSelectElement> & {
+      fieldSize?: string;
+      children: React.ReactNode;
+      label?: string;
+    }
+  ) => {
     const { children, label, ...rest } = props;
     const sanitized = { ...rest };
     delete sanitized.fieldSize;
@@ -39,14 +45,26 @@ vi.mock('../components/AutosaveIndicator', () => ({
 
 vi.mock('../components/BulkPaymentStatusTracker', () => ({
   default: () => <div data-testid="bulk-status-tracker" />,
+  BulkPaymentStatusTracker: () => <div data-testid="bulk-status-tracker" />,
 }));
 
 vi.mock('../components/CountdownTimer', () => ({
   default: () => <div data-testid="countdown-timer" />,
+  CountdownTimer: () => <div data-testid="countdown-timer" />,
 }));
 
 vi.mock('../components/FormField', () => ({
-  FormField: ({ children, label, error, helpText }: { children: React.ReactNode; label?: string; error?: string; helpText?: string }) => (
+  FormField: ({
+    children,
+    label,
+    error,
+    helpText,
+  }: {
+    children: React.ReactNode;
+    label?: string;
+    error?: string;
+    helpText?: string;
+  }) => (
     <div>
       <label>{label}</label>
       {children}
@@ -64,14 +82,17 @@ vi.mock('../components/payroll/PayrollScheduleForm', () => ({
 
 vi.mock('../components/TransactionSimulationPanel', () => ({
   default: () => <div data-testid="simulation-panel" />,
+  TransactionSimulationPanel: () => <div data-testid="simulation-panel" />,
 }));
 
 vi.mock('../components/ContractErrorPanel', () => ({
   default: () => <div data-testid="contract-error-panel" />,
+  ContractErrorPanel: () => <div data-testid="contract-error-panel" />,
 }));
 
 vi.mock('../components/IssuerMultisigBanner', () => ({
   default: () => <div data-testid="multisig-banner" />,
+  IssuerMultisigBanner: () => <div data-testid="multisig-banner" />,
 }));
 
 vi.mock('../components/HelpLink', () => ({
@@ -80,6 +101,7 @@ vi.mock('../components/HelpLink', () => ({
 
 vi.mock('../components/TransactionPendingOverlay', () => ({
   default: () => <div data-testid="pending-overlay" />,
+  TransactionPendingOverlay: () => <div data-testid="pending-overlay" />,
 }));
 
 const notifyMock = vi.fn();
@@ -159,7 +181,7 @@ describe('PayrollScheduler error boundary', () => {
 
     render(<PayrollScheduler />);
 
-    fireEvent.click(screen.getByRole('button', { name: /configure schedule/i }));
+    fireEvent.click(screen.getByRole('button', { name: /configure payroll schedule/i }));
 
     expect(screen.getByRole('alert')).toBeTruthy();
     expect(screen.getByText(/PayrollScheduleForm encountered an error/i)).toBeTruthy();

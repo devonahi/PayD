@@ -23,6 +23,27 @@ describe('WalletQRCode', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     URL.createObjectURL = vi.fn(() => 'blob:test');
+
+    // jsdom doesn't fire img.onload — make it fire synchronously when src is set
+    vi.spyOn(window, 'Image').mockImplementation(function () {
+      const img = { width: 160, height: 160 } as HTMLImageElement;
+      Object.defineProperty(img, 'src', {
+        set(url: string) {
+          void url;
+          if (typeof img.onload === 'function') img.onload(new Event('load'));
+        },
+        get() {
+          return '';
+        },
+      });
+      return img;
+    });
+
+    // jsdom doesn't implement canvas — provide minimal stubs
+    HTMLCanvasElement.prototype.getContext = vi.fn(
+      () => ({ drawImage: vi.fn() }) as unknown as CanvasRenderingContext2D
+    );
+    HTMLCanvasElement.prototype.toDataURL = vi.fn(() => 'data:image/png;base64,test');
   });
 
   it('renders download button and triggers download on click', () => {
@@ -34,9 +55,7 @@ describe('WalletQRCode', () => {
 
     fireEvent.click(downloadBtn);
 
-    const anchorCalls = createElementSpy.mock.results.filter(
-      (r) => r.value?.tagName === 'A'
-    );
+    const anchorCalls = createElementSpy.mock.results.filter((r) => r.value?.tagName === 'A');
     expect(anchorCalls.length).toBeGreaterThan(0);
 
     const anchor = anchorCalls[0].value;

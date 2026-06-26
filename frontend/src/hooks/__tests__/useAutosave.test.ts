@@ -2,17 +2,19 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useAutosave } from '../useAutosave';
 
-vi.mock('../utils/localStorage', () => {
+vi.mock('../../utils/localStorage', () => {
   return {
-    LocalStorageHelper: vi.fn().mockImplementation(() => ({
-      get: vi.fn().mockReturnValue(null),
-      set: vi.fn(),
-      remove: vi.fn(),
-    })),
+    LocalStorageHelper: vi.fn(function () {
+      return {
+        get: vi.fn().mockReturnValue(null),
+        set: vi.fn(),
+        remove: vi.fn(),
+      };
+    }),
   };
 });
 
-import { LocalStorageHelper } from '../utils/localStorage';
+import { LocalStorageHelper } from '../../utils/localStorage';
 
 describe('useAutosave', () => {
   beforeEach(() => {
@@ -32,10 +34,9 @@ describe('useAutosave', () => {
   });
 
   it('sets saving=true while debounce is pending and false after successful write', async () => {
-    const { result, rerender } = renderHook(
-      ({ data }) => useAutosave('key', data, 500),
-      { initialProps: { data: { name: 'a' } } }
-    );
+    const { result, rerender } = renderHook(({ data }) => useAutosave('key', data, 500), {
+      initialProps: { data: { name: 'a' } },
+    });
 
     // First cycle is skipped
     rerender({ data: { name: 'b' } });
@@ -60,12 +61,17 @@ describe('useAutosave', () => {
       }),
       remove: vi.fn(),
     };
-    vi.mocked(LocalStorageHelper).mockImplementationOnce(() => mockInstance as never);
+    vi.mocked(LocalStorageHelper)
+      .mockImplementationOnce(function () {
+        return mockInstance as never;
+      })
+      .mockImplementationOnce(function () {
+        return mockInstance as never;
+      });
 
-    const { result, rerender } = renderHook(
-      ({ data }) => useAutosave('key', data, 300),
-      { initialProps: { data: { name: 'a' } } }
-    );
+    const { result, rerender } = renderHook(({ data }) => useAutosave('key', data, 300), {
+      initialProps: { data: { name: 'a' } },
+    });
 
     rerender({ data: { name: 'b' } });
 
@@ -87,12 +93,17 @@ describe('useAutosave', () => {
       }),
       remove: vi.fn(),
     };
-    vi.mocked(LocalStorageHelper).mockImplementationOnce(() => mockInstance as never);
+    vi.mocked(LocalStorageHelper)
+      .mockImplementationOnce(function () {
+        return mockInstance as never;
+      })
+      .mockImplementationOnce(function () {
+        return mockInstance as never;
+      });
 
-    const { result, rerender } = renderHook(
-      ({ data }) => useAutosave('key', data, 100),
-      { initialProps: { data: { v: 1 } } }
-    );
+    const { result, rerender } = renderHook(({ data }) => useAutosave('key', data, 100), {
+      initialProps: { data: { v: 1 } },
+    });
 
     rerender({ data: { v: 2 } });
 
@@ -116,17 +127,26 @@ describe('useAutosave', () => {
       set: mockSet,
       remove: vi.fn(),
     };
-    vi.mocked(LocalStorageHelper).mockImplementationOnce(() => mockInstance as never);
+    vi.mocked(LocalStorageHelper)
+      .mockImplementationOnce(function () {
+        return mockInstance as never;
+      })
+      .mockImplementationOnce(function () {
+        return mockInstance as never;
+      });
 
-    const { rerender } = renderHook(
-      ({ data }) => useAutosave('key', data, 500),
-      { initialProps: { data: 'a' } }
-    );
+    const { rerender } = renderHook(({ data }) => useAutosave('key', data, 500), {
+      initialProps: { data: 'a' },
+    });
 
     rerender({ data: 'b' });
-    await act(async () => { vi.advanceTimersByTime(200); });
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
     rerender({ data: 'c' });
-    await act(async () => { vi.advanceTimersByTime(500); });
+    await act(async () => {
+      vi.advanceTimersByTime(500);
+    });
 
     // Only one write should have happened (for 'c')
     expect(mockSet).toHaveBeenCalledTimes(1);
