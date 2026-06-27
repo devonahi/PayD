@@ -797,3 +797,80 @@ fn test_admin_operations_available_when_paused() {
     client.set_paused(&true);
     client.bump_ttl();
 }
+
+// ── #875: receiver_id == target_asset rejected ────────────────────────────────
+
+#[test]
+#[should_panic(expected = "Error(Contract, #12)")]
+fn test_initiate_payment_same_receiver_and_asset_panics() {
+    let (env, _admin, _contract_id, client) = setup();
+    let from = Address::generate(&env);
+    let token_address = create_token(&env, &from, 1_000);
+    // receiver_id and target_asset are identical — should be rejected
+    let same = String::from_str(&env, "USD");
+    client.initiate_payment(&from, &100, &token_address, &same, &same, &String::from_str(&env, "anc-1"));
+}
+
+#[test]
+fn test_initiate_payment_different_receiver_and_asset_succeeds() {
+    let (env, _admin, _contract_id, client) = setup();
+    let from = Address::generate(&env);
+    let token_address = create_token(&env, &from, 1_000);
+    let id = client.initiate_payment(
+        &from,
+        &100,
+        &token_address,
+        &String::from_str(&env, "worker-123"),
+        &String::from_str(&env, "EUR"),
+        &String::from_str(&env, "anc-1"),
+    );
+    assert_eq!(id, 1);
+}
+
+// ── #880: complete_payment / fail_payment auth before status ──────────────────
+
+#[test]
+#[should_panic]
+fn test_complete_payment_non_admin_rejected_regardless_of_status() {
+    let (env, admin, _contract_id, client) = setup();
+    let from = Address::generate(&env);
+    let token_address = create_token(&env, &from, 1_000);
+
+    let payment_id = client.initiate_payment(
+        &from,
+        &100,
+        &token_address,
+        &String::from_str(&env, "rec-1"),
+        &String::from_str(&env, "USD"),
+        &String::from_str(&env, "anc-1"),
+    );
+
+    // Non-admin tries to complete — must fail with auth error, not status error
+    let non_admin = Address::generate(&env);
+    env.mock_auths(&[]);
+    let recipient = Address::generate(&env);
+    client.complete_payment(&non_admin, &payment_id, &recipient);
+    let _ = admin;
+}
+
+#[test]
+#[should_panic]
+fn test_fail_payment_non_admin_rejected_regardless_of_status() {
+    let (env, admin, _contract_id, client) = setup();
+    let from = Address::generate(&env);
+    let token_address = create_token(&env, &from, 1_000);
+
+    let payment_id = client.initiate_payment(
+        &from,
+        &100,
+        &token_address,
+        &String::from_str(&env, "rec-1"),
+        &String::from_str(&env, "USD"),
+        &String::from_str(&env, "anc-1"),
+    );
+
+    let non_admin = Address::generate(&env);
+    env.mock_auths(&[]);
+    client.fail_payment(&non_admin, &payment_id);
+    let _ = admin;
+}
