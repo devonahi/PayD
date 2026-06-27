@@ -22,6 +22,7 @@ pub enum CrossAssetPaymentError {
     AdminMismatch = 9,
     LedgerReplayDetected = 10,
     ContractPaused = 11,
+    SameReceiverAndAsset = 12,
 }
 
 /// Emitted when the current admin proposes a new admin (two-step transfer).
@@ -313,6 +314,9 @@ impl CrossAssetPaymentContract {
         if receiver_id.is_empty() || target_asset.is_empty() || anchor_id.is_empty() {
             return Err(CrossAssetPaymentError::EmptyRoutingFields);
         }
+        if receiver_id == target_asset {
+            return Err(CrossAssetPaymentError::SameReceiverAndAsset);
+        }
 
         from.require_auth();
         Self::require_unique_ledger(&env, &from)?;
@@ -585,6 +589,9 @@ impl CrossAssetPaymentContract {
     }
 
     fn require_matching_admin(env: &Env, admin: &Address) -> Result<(), CrossAssetPaymentError> {
+        // Auth check first — unauthorized callers are rejected before any
+        // internal state (payment status, paused flag) is consulted (#880).
+        admin.require_auth();
         let stored_admin: Address = env
             .storage()
             .persistent()
@@ -593,7 +600,6 @@ impl CrossAssetPaymentContract {
         if stored_admin != *admin {
             return Err(CrossAssetPaymentError::AdminMismatch);
         }
-        admin.require_auth();
         Ok(())
     }
 
