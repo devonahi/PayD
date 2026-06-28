@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import { validatePasswordStrength } from '../utils/passwordStrength.js';
 import { apiErrorResponse, ErrorCodes } from '../utils/apiError.js';
 import { getRedisClient } from '../services/rateLimitService.js';
+import { sendVerificationEmail, verifyEmailToken } from '../services/emailVerificationService.js';
 
 const pool = new Pool({ connectionString: config.DATABASE_URL });
 
@@ -447,6 +448,49 @@ export class AuthController {
       res.json({ accessToken });
     } catch (error) {
       res.status(401).json(apiErrorResponse(ErrorCodes.UNAUTHORIZED, 'Invalid or expired refresh token'));
+    }
+  }
+
+  /**
+   * GET /api/auth/verify-email?token=...
+   * Marks the account as verified. Safe to call multiple times (idempotent after first success).
+   */
+  static async verifyEmail(req: express.Request, res: express.Response) {
+    const token = typeof req.query.token === 'string' ? req.query.token.trim() : '';
+    try {
+      const userId = await verifyEmailToken(token);
+      return res.json({ message: 'Email verified successfully.', userId });
+    } catch (err: any) {
+      const status = err.status ?? 400;
+      return res.status(status).json(apiErrorResponse(ErrorCodes.BAD_REQUEST, err.message));
+    }
+  }
+
+  /**
+   * POST /api/auth/resend-verification
+   * Resends a verification email for an unverified account.
+   * Body: { email }
+   */
+  static async resendVerification(req: express.Request, res: express.Response) {
+    const { email } = req.body as { email?: string };
+    if (!email) {
+      return res.status(400).json(apiErrorResponse(ErrorCodes.BAD_REQUEST, 'Missing email.'));
+    }
+    const emailNorm = email.trim().toLowerCase();
+    try {
+      const result = await pool.query(
+        'SELECT id, email_verified FROM users WHERE email = }
+',
+        [emailNorm]
+      );
+      // Always return 200 to avoid leaking whether the email exists.
+      if (result.rows.length === 0 || result.rows[0].email_verified) {
+        return res.json({ message: 'If that email exists and is unverified, a new link has been sent.' });
+      }
+      await sendVerificationEmail(result.rows[0].id, emailNorm);
+      return res.json({ message: 'If that email exists and is unverified, a new link has been sent.' });
+    } catch (error: any) {
+      return res.status(500).json(apiErrorResponse(ErrorCodes.INTERNAL_ERROR, error.message));
     }
   }
 }
