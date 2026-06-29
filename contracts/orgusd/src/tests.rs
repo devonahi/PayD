@@ -169,3 +169,45 @@ fn test_mint_accumulates_correctly() {
     assert_eq!(client.balance(&account), 300);
     assert_eq!(client.total_supply(), 300);
 }
+
+// ── Issue #886: negative-amount rejection ─────────────────────────────────────
+
+/// mint() must reject explicitly negative amounts, not just zero.
+/// The guard `amount <= 0` already catches negatives but this test makes the
+/// behaviour explicit so a future refactor cannot silently regress it.
+#[test]
+fn test_mint_rejects_negative_amount() {
+    let (env, client, _admin) = setup();
+    let account = setup_with_account(&client, &env);
+    let result = client.try_mint(&account, &-1);
+    assert_eq!(result, Err(Ok(OrgUsdError::InvalidAmount)));
+}
+
+#[test]
+fn test_mint_rejects_large_negative_amount() {
+    let (env, client, _admin) = setup();
+    let account = setup_with_account(&client, &env);
+    let result = client.try_mint(&account, &i128::MIN);
+    assert_eq!(result, Err(Ok(OrgUsdError::InvalidAmount)));
+}
+
+/// transfer() must reject explicitly negative amounts.
+#[test]
+fn test_transfer_rejects_negative_amount() {
+    let (env, client, _admin) = setup();
+    let from = setup_with_account(&client, &env);
+    let to = setup_with_account(&client, &env);
+    client.mint(&from, &100);
+    let result = client.try_transfer(&from, &to, &-1);
+    assert_eq!(result, Err(Ok(OrgUsdError::InvalidAmount)));
+}
+
+#[test]
+fn test_transfer_rejects_large_negative_amount() {
+    let (env, client, _admin) = setup();
+    let from = setup_with_account(&client, &env);
+    let to = setup_with_account(&client, &env);
+    client.mint(&from, &100);
+    let result = client.try_transfer(&from, &to, &i128::MIN);
+    assert_eq!(result, Err(Ok(OrgUsdError::InvalidAmount)));
+}
